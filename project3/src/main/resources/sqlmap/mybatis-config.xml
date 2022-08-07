@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias type="com.project3.camping.vo.CsBoardVo" alias="csBoardVo"/>
+		<typeAlias type="com.project3.camping.vo.CsReplyVo" alias="csReplyVo"/>
+		<typeAlias type="com.project3.camping.vo.MemberVo" alias="memberVo"/>
+		<typeAlias type="com.project3.camping.vo.productVo" alias="productVo"/>
+	</typeAliases>
+  
+  <mappers>
+      <mapper resource="/sqlmap/mapper/csBoardVo-mapper.xml" />
+      <mapper resource="/sqlmap/mapper/csReplyVo-mapper.xml" />
+	  <mapper resource="/sqlmap/mapper/memberVo-mapper.xml" />
+   <!--<mapper resource="/sqlmap/mapper/memberMapper.xml"/>  -->   
+      <mapper resource="/sqlmap/mapper/productVo-mapper.xml"/>
+  </mappers>
+</configuration>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="csBoardVo">
+
+	<insert id="insert" parameterType="csBoardVo"
+	useGeneratedKeys="true" keyProperty="csNum"
+	>
+		<![CDATA[
+			insert into csboard(csTitle, csContent, csWriter)
+			values(#{csTitle},#{csContent},#{csWriter});
+		]]>
+	</insert>
+
+
+	<select id="select_list" parameterType="hashMap"
+		resultType="csBoardVo">  
+	<![CDATA[  
+		select csNum, csTitle, csContent, csWriter, csRegDate, csViewCnt from csboard where 1=1
+	]]>
+		<if test="keyword != null and keyword != ''">
+			and (csTitle like CONCAT('%',#{keyword},'%')
+			or csWriter like CONCAT('%',#{keyword},'%'))
+		</if>
+		order by csRegDate desc
+	</select>
+	
+	<select id="select_get" parameterType="csBoardVo" resultType="csBoardVo">
+		<![CDATA[
+			select csNum, csTitle, csContent, csWriter, csRegDate
+			from csboard
+			where csNum = #{csNum} 
+		]]>
+	</select>
+
+	<!--<update id="update" parameterType="csBoardVo">
+		<![CDATA[
+			update csboard set
+		]]>
+		<if test="csTitle != null"> csTitle=#{csTitle}</if>
+		<if test="csContent != null"> csContent=#{csContent} </if>
+		
+		<![CDATA[
+			where csNum = #{csNum}
+		]]>
+	</update>  -->
+	<update id="update" parameterType="csBoardVo">
+	<![CDATA[
+            update csboard
+        ]]>
+        <trim prefix="SET" suffixOverrides=",">
+        <if test="csTitle != null"> csTitle = #{csTitle},</if>
+        <if test="csContent != null"> csContent=#{csContent} </if>
+		</trim>
+        <![CDATA[
+            where csNum = #{csNum}
+        ]]>
+	</update>
+	
+	<delete id="delete" parameterType="csBoardVo">  
+	    <![CDATA[  
+	    delete from csboard
+	    where  
+	    csNum = #{csNum}
+	    ]]>  
+	</delete>
+	
+	<update id="cnt" parameterType="csBoardVo">
+		<![CDATA[
+			update csboard set csViewCnt = csViewCnt + 1 where csNum = #{csNum};
+		]]>
+	</update>
+	
+	<select id="list_page" resultType="csBoardVo">
+	<![CDATA[
+		select csNum, csTitle, csContent, csWriter, csRegDate, csViewCnt
+		from csboard where csNum > 0
+		order by csNum desc , csRegDate desc
+		limit #{page}, 10
+	]]>
+	</select>
+	
+	<select id="list_criteria" parameterType="hashMap" resultType="csBoardVo">
+	<![CDATA[
+		select csNum, csTitle, csContent, csWriter, csRegDate, csViewCnt
+		from csboard where csNum > 0
+		order by csNum desc , csRegDate desc
+		limit #{pageStart}, #{perPageNum}
+	]]>
+	</select>
+	
+	<select id="count_paging" resultType="int">
+	<![CDATA[
+		select count(csNum)
+		from csboard
+		where csNum > 0
+	]]>
+	</select>
+	
+	
+	<!-- search -->
+	<select id="list_search" resultType="csBoardVo">
+	<![CDATA[
+		select * from csboard where csNum > 0
+	]]>
+	<if test="searchType != null">
+		<if test="searchType == 't'.toString()"> and csTitle like CONCAT('%',#{keyword},'%')</if>
+		<if test="searchType == 'c'.toString()"> and csContent like CONCAT('%',#{keyword},'%')</if>
+		<if test="searchType == 'w'.toString()"> and csWriter like CONCAT('%',#{keyword},'%')</if>
+		<if test="searchType == 'tc'.toString()"> and (csTitle like CONCAT('%',#{keyword},'%') OR csContent like CONCAT('%',#{keyword},'%'))</if>
+		<if test="searchType == 'cw'.toString()"> and (csContent like CONCAT('%',#{keyword},'%') OR csWriter like CONCAT('%',#{keyword},'%'))</if>
+		<if test="searchType == 'tcw'.toString()"> and (csTitle like CONCAT('%',#{keyword},'%') OR csContent like CONCAT('%',#{keyword},'%') OR csWriter like CONCAT('%',#{keyword},'%'))</if>
+	</if>
+	<![CDATA[
+		order by csNum desc, csRegDate desc
+		limit #{pageStart},#{perPageNum}
+	]]>
+	</select>
+	
+	<sql id="search"> <!-- sql문 재사용 -->
+	<if test="searchType != null">
+		<if test="searchType == 't'.toString()"> and csTitle like CONCAT('%',#{keyword},'%')</if>
+		<if test="searchType == 'c'.toString()"> and csContent like CONCAT('%',#{keyword},'%')</if>
+		<if test="searchType == 'w'.toString()"> and csWriter like CONCAT('%',#{keyword},'%')</if>
+		<if test="searchType == 'tc'.toString()"> and (csTitle like CONCAT('%',#{keyword},'%') OR csContent like CONCAT('%',#{keyword},'%'))</if>
+		<if test="searchType == 'cw'.toString()"> and (csContent like CONCAT('%',#{keyword},'%') OR csWriter like CONCAT('%',#{keyword},'%'))</if>
+		<if test="searchType == 'tcw'.toString()"> and (csTitle like CONCAT('%',#{keyword},'%') OR csContent like CONCAT('%',#{keyword},'%') OR csWriter like CONCAT('%',#{keyword},'%'))</if>
+	</if>
+	</sql>
+	
+	<select id="list_search_count" resultType="int">
+	<![CDATA[
+		select count(csNum) from csboard where csNum > 0
+	]]>
+	<include refid="search"></include>
+	</select>
+	
+	
+
+</mapper>     

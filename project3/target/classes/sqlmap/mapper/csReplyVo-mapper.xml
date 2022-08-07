@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="csReplyVo">
+
+	<select id="select_list" resultType="csReplyVo">
+	<![CDATA[  
+		select csReplyNum, csReplyContent, csReplyWriter, csReplyRegDate 
+		from csreply where csNum = #{csNum}
+		order by csReplyNum desc;
+	]]>
+	</select>
+	
+	<insert id="insert">
+		<![CDATA[
+			insert into csreply(csNum, csReplyContent, csReplyWriter)
+			values(#{csNum},#{csReplyContent},#{csReplyWriter});
+		]]>
+	</insert>
+	
+	<update id="update">
+		<![CDATA[
+			update csreply set csReplyContent = #{csReplyContent}, csReplyUpdateDate = now()
+			where csReplyNum = #{csReplyNum};
+		]]>
+	</update>
+
+	<delete id="delete">
+	    <![CDATA[  
+	    delete from csreply where csReplyNum = #{csReplyNum};
+	    ]]>
+	</delete>
+
+	<select id="list_page" parameterType="hashmap" resultType="csReplyVo">
+	<![CDATA[  
+		select *
+		from csreply where csNum = #{csNum}
+		order by csReplyNum desc;
+		limit #{cri.pageStart}, #{cri.perPageNum}
+	]]>
+	</select>
+	
+	<select id="count" resultType="int">
+		<![CDATA[  
+		select count(csNum)
+		from csreply where csNum = #{csNum}
+	]]>
+	</select>
+
+
+</mapper>     
